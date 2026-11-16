@@ -1,198 +1,179 @@
-# 我的中文报告（bookdown 项目）
+# 会后总结 · 任务汇报
 
-这是一个用 [**bookdown**](https://bookdown.org) 写中文书/报告的项目。
-它把一堆普通的 Markdown 文件（`.Rmd`，其实是 Markdown + 少量 R 代码块）编译成一个带目录的网站、一个 PDF、一个 EPUB。
+用 **bookdown** 维护的汇报文集：每写一篇就多一章，编译成一个固定网址。
+老师收藏一次网址，之后每次刷新都是最新内容。
 
-**你只需要写 `.Rmd` 文件，格式和排版由模板负责。**
+```
+网址（示例）：https://你的用户名.github.io/my-book/
+```
 
 ---
 
-## 一、文件结构（哪些该改，哪些别动）
+## 一、文件结构
 
 ```
 my-book/
-├── index.Rmd            ← 封面：标题、作者、前言、致谢（要改）
-├── 01-introduction.Rmd  ← 第 1 章（改成你的内容）
-├── 02-foo.Rmd           ← 第 2 章（改成你的内容）
-├── 07-hmm.Rmd           ← 附录（用不上就删掉）
-├── 08-references.Rmd    ← 参考文献（要引用文献才用）
-├── book.bib             ← 参考文献条目（BibTeX 格式）
-├── _bookdown.yml        ← 章节目录顺序、输出目录（一般不用动）
-├── _output.yml          ← 网页/PDF 样式配置（一般不用动）
-├── css/style.css        ← 网页样式（想换配色改这里）
-├── latex/               ← PDF 用的 LaTeX 模板（做 PDF 才需要）
-└── .github/workflows/build-book.yaml  ← 自动编译脚本（别动）
+├── index.Rmd                  ← 首页：标题、说明（改标题和作者）
+├── 01-huiyi-zongjie.Rmd       ← 会后总结模板（复制它写新的）
+├── 02-renwu-huibao.Rmd        ← 任务汇报模板（复制它写新的）
+├── _bookdown.yml              ← 目录顺序、输出目录（不用动）
+├── _output.yml                ← 网页样式配置（不用动）
+├── css/style.css              ← 配色字体（想调再动）
+├── latex/                     ← 导出 PDF 才用到
+├── README.md                  ← 本文件
+└── .github/workflows/build-book.yaml   ← 自动编译发布（别动）
 ```
 
-**章节顺序 = 文件名开头的数字顺序**（`index.Rmd` 永远排第一）。想加一章就新建 `03-你的标题.Rmd`，文件名必须以数字开头且补零。
+**目录顺序 = 文件名开头的数字。** 编号不要重复，`index.Rmd` 永远排第一。
 
 ---
 
-## 二、最省事的用法：不装任何软件，全靠网页
+## 二、每次怎么写
 
-> 编译（把 `.Rmd` 变成网页）交给 GitHub 的服务器做，你只负责改文字。改完提交，等 2 分钟，刷新网页就能看到新版。
+### 写一篇新的会后总结
 
-### 第 1 步：注册 / 登录 GitHub
+1. 复制 `01-huiyi-zongjie.Rmd` → 粘贴出副本
+2. 改名为下一个编号，比如 `03-huiyi-zongjie.Rmd`
+3. 打开改两处：
+   - 标题那行的日期 `# 会后总结（2026-11-16 组会）`
+   - 花括号里的锚点 `{#meeting-1}` → 改成不重复的，如 `{#meeting-1116}`
+4. 往下填表格（会议信息、议题、决议、待办）
 
-浏览器打开 <https://github.com> ，没有账号点 **Sign up** 注册（邮箱 + 密码 + 验证码，免费）。
+### 写一篇新的任务汇报
 
-### 第 2 步：建一个新仓库（Repository）
+1. 复制 `02-renwu-huibao.Rmd` → 改名为 `04-renwu-huibao.Rmd`
+2. 改标题的周次和锚点 `{#report-1}` → `{#report-12}`
+3. 填「本期完成情况」表格和「下期计划」
 
-1. 右上角 **+** → **New repository**
-2. **Repository name** 填 `my-book`（名字随意，建议全用英文小写，不要空格和中文）
-3. 选 **Public**（公开；GitHub Pages 免费账号必须公开仓库才能发布）
-4. **不要**勾选 "Add a README file"（我们后面自己传）
-5. 点 **Create repository**
+> 文件开头的 `<!-- ... -->` 是给自己看的说明，编译后不会显示给老师，可以保留也可以删掉。
 
-建好后页面地址就是你的仓库：
+---
+
+## 三、上传到 GitHub 生成网址（一次性设置）
+
+### 1. 建仓库
+
+<https://github.com> → 右上角 **+ → New repository** → 名字 `my-book` → 选 **Public** → 不勾 README → **Create repository**
+
+### 2. 传文件
+
+打开上传页（把用户名换成你自己的）：
 
 ```
-https://github.com/你的用户名/my-book
+https://github.com/你的用户名/my-book/upload/main
 ```
 
-这就是"打开 GitHub 仓库"的意思——用浏览器访问这个网址就是打开它。
+在 `my-book` 文件夹里 **Ctrl+A 全选 13 个项目**（先在资源管理器「查看 → 显示 → 隐藏的项目」里勾上，13 个里有 3 个文件夹：`.github`、`css`、`latex`），拖进浏览器上传区 → 底部 **Commit changes**。
 
-### 第 3 步：把项目文件传上去
+### 3. 开 Pages
 
-在仓库页面点 **Add file → Upload files**，把本项目文件夹里的**所有文件和文件夹**拖进去
-（`.github`、`css`、`latex` 这三个文件夹也要一起拖），然后点 **Commit changes**。
+**Settings → Pages → Source 下拉 → 选 `GitHub Actions`**
 
-> 注意：Windows 默认隐藏 `.github` 文件夹。在文件资源管理器里勾上「查看 → 显示 → 隐藏的项目」才看得到。
-> 如果拖拽时漏了 `.github/workflows/build-book.yaml`，自动编译就不会启动，后面 Pages 会一直空白。
+### 4. 等编译
 
-### 第 4 步：改掉两处占位符
+点 **Actions** 标签，等「编译并发布我的书」变成 ✅（首次 2–4 分钟）。
 
-在仓库里点开 `_output.yml` 和 `index.Rmd`，点右上角铅笔图标编辑：
-
-- `index.Rmd` 里的 `author: "你的名字"`、`title: "我的报告"`、`github-repo: YOUR_GITHUB_USERNAME/my-book`
-- `_output.yml` 里的 `YOUR_GITHUB_USERNAME`
-
-改成你自己的 GitHub 用户名（不改也能编译，只是"编辑此页"链接会 404）。
-
-### 第 5 步：打开 Pages
-
-1. 仓库页面上方 **Settings**
-2. 左侧栏 **Pages**
-3. **Build and deployment → Source** 选 **GitHub Actions**（不要选 "Deploy from a branch"）
-
-### 第 6 步：等它编译，然后打开你的书
-
-1. 点仓库页面上方 **Actions** 标签，能看到一条叫「编译并发布我的书」的任务在跑
-2. 等它变成 ✅ 绿色对勾（第一次约 2–4 分钟，要装 R 和 bookdown 包）
-3. 回到 **Settings → Pages**，顶部会显示：
+回到 **Settings → Pages**，顶部显示：
 
 ```
 Your site is live at https://你的用户名.github.io/my-book/
 ```
 
-**这个网址就是"应用模板"后的成品**——用浏览器打开，看到的就是一本带侧边目录的中文电子书。手机上也能看，可以直接发给别人。
+---
 
-以后每次改完 `commit`，它都会自动重新编译、自动更新这个网址。
+## 四、老师怎么查阅
+
+把上面这个网址发给他，他随时打开都是最新版。
+
+**更新要多久？** 不是实时，是**提交后 1–2 分钟**自动更新：
+
+- 你在网页上改完 `Commit changes`
+- GitHub 服务器自动重编译（约 60–120 秒）
+- 老师刷新页面就是新内容
+
+页面上有「编辑」链接（配置在 `_output.yml` 里），点了会跳到 GitHub 的在线编辑器，**手机上也能改**。
+
+### 如果需要「边写老师边看」的真正实时
+
+GitHub Pages 做不到秒级同步。要真·实时的话用这些（都是 Markdown、都能发链接）：
+
+| 工具 | 网址 | 特点 |
+|---|---|---|
+| HackMD | hackmd.io | Markdown 原生、协作实时、可设只读共享链接，最接近你的需求 |
+| 语雀 | yuque.com | 国内访问快、支持 Markdown 粘贴、知识库分享 |
+| 飞书文档 | feishu.cn | 团队协作、老师可能已有账号 |
+| 腾讯文档 | docs.qq.com | 门槛最低 |
+
+**建议**：日常写作用本项目的 GitHub 网址（正式归档、格式统一、永远一个链接）；如果老师要求**实时盯着进度**，把同样的内容同步到 HackMD 共享一篇。
 
 ---
 
-## 三、本地预览（可选，但要边写边看就得装）
+## 五、本地预览（可选）
 
-不想每次都等 GitHub 编译，可以本机装。
-
-**你机器上的现状（已确认）：** R 4.5.1 装在 `D:\R-4.5.1`，RStudio 也装了，`knitr` 和 `rmarkdown` 有了，**只差 `bookdown` 这一个包**。
-
-1. 打开 **RStudio** → `File → Open Project` → 选本文件夹里的 `bookdown-chinese.Rproj`
-2. 在 Console（左下角）里跑一次，**用国内镜像**（直连 CRAN 国内经常失败）：
+装了 R + `bookdown` 包之后，在 RStudio 里点 **Build Book** 可以在本地看效果。
 
 ```r
 install.packages("bookdown", repos = "https://mirrors.tuna.tsinghua.edu.cn/CRAN/")
 ```
 
-   如果报"无法访问"，再试这几个镜像，任选一个能通的：
+编译结果在 `docs/` 文件夹，双击 `docs/index.html` 即可预览。
 
-```r
-# 中科大
-install.packages("bookdown", repos = "https://mirrors.ustc.edu.cn/CRAN/")
-# 阿里云
-install.packages("bookdown", repos = "https://mirrors.aliyun.com/CRAN/")
-```
-
-3. 点编辑器上方的 **Build Book** 按钮（或 `Build` 面板 → **Build Book**）
-4. 生成结果在 `docs/` 文件夹，双击 `docs/index.html` 预览
-
-一次装好，以后点 Build Book 就行。Pandoc 不用单独装，RStudio 自带。
+不装也能写——直接用 GitHub 网页的在线编辑器改，提交后看线上效果。
 
 ---
 
-## 四、最常用的 Markdown 写法
+## 六、常用 Markdown 写法
 
 ```markdown
-# 一级标题        ← 在 bookdown 里等于"新的一章"
-## 二级标题       ← 一节
-### 三级标题      ← 一小节
+# 一级标题     ← 等于"新的一章"
+## 二级标题
+### 三级标题
 
-**加粗**  *斜体*  `行内代码`
+**加粗**  *斜体*  `代码`
 
-- 列表项
-- 列表项
-
-1. 有序
-2. 列表
+- 无序列表
+1. 有序列表
 
 > 引用
 
-[链接文字](https://example.com)
-
+[链接](https://example.com)
 ![图片说明](images/pic.png)
 
 | 表头 | 表头 |
-|------|------|
-| 内容 | 内容 |
-```
+|:-----|:-----|
+| 左对齐 | 内容 |
 
-**公式**（LaTeX 语法，网页和 PDF 都能渲染）：
+行内公式 $E=mc^2$
 
-```markdown
-行内公式 $E = mc^2$
-
-独立公式：
 $$
 \frac{\partial u}{\partial t} = \alpha \nabla^2 u
 $$
 ```
 
-**代码块**（带语法高亮）：
-
-````markdown
-```python
-print("hello")
-```
-````
-
-**R 代码块会真的被执行**（跑出图、跑出表），如果只想展示代码不想执行，写成：
-
-````markdown
-```{r, eval=FALSE}
-plot(cars)
-```
-````
+表格里的 `|:-----|` 冒号控制对齐：`左` 冒号在左、`右` 冒号在右、`居中` 两边都有。
 
 ---
 
-## 五、常见问题
-
-**Q：Actions 是红叉（失败）怎么办？**
-点进失败的那一步看日志。最常见原因：`.github/workflows/build-book.yaml` 没上传成功、或某个 `.Rmd` 里有语法错误（比如代码块没闭合）。
+## 七、常见问题
 
 **Q：Pages 显示 404？**
-① 确认 Settings → Pages 的 Source 是 **GitHub Actions**；② 确认 Actions 里最后一次部署是成功的；③ 第一次部署后等 1–2 分钟再刷新。
+① Settings → Pages 的 Source 必须是 **GitHub Actions**；② Actions 里最后一次部署要成功；③ 首次部署后等 1–2 分钟。
 
-**Q：想导出 PDF / Word？**
-- PDF：需要本地装 R + LaTeX（TinyTeX），`bookdown::render_book("index.Rmd", "bookdown::pdf_book")`。
-- Word：bookdown 不直接支持，可以先用 `pandoc` 把 `docs/` 里的单章转 Word，或直接用 Typora 的导出。
+**Q：Actions 红叉？**
+点进失败那步看日志。最常见是 `.github/workflows/build-book.yaml` 没传上去，或某个 `.Rmd` 代码块没闭合（少一个 ```）。
 
-**Q：能不能不用 GitHub，本地就行？**
-可以。装好 R 后本地 Build Book，结果在 `docs/`，双击 `docs/index.html` 就能看，整个 `docs` 文件夹拷给别人也能看。
+**Q：想导出 Word 交给老师？**
+浏览器打开线上页面，`Ctrl+P` → 另存为 PDF 最快。要真 Word 就用 Pandoc：
+```
+pandoc docs/index.html -o 汇报.docx
+```
+
+**Q：字体太小/太窄？**
+改 `css/style.css`，比如加 `body { font-size: 16px; }`。
 
 ---
 
-## 六、这个模板的来源
+## 八、来源
 
-改编自 <https://github.com/yihui/bookdown-chinese>（Yihui Xie 的中文 bookdown 示例，CC0 授权），
-已做如下修改：输出目录改为 `docs`、添加 GitHub Actions 自动编译发布、清理指向原作者仓库的链接、封面与前言改为报告骨架。
+改编自 <https://github.com/yihui/bookdown-chinese>（CC0）。
+已改造：输出目录改为 `docs`、加入 GitHub Actions 自动编译发布、模板改为「会后总结 / 任务汇报」两类。
