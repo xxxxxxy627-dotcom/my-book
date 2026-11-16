@@ -9,6 +9,12 @@ github-repo: YOUR_GITHUB_USERNAME/my-book
 colorlinks: yes
 ---
 
+# 说明 {-}
+
+本页汇总每次组会的会议总结与任务汇报，左侧目录按时间顺序排列。
+
+最近更新：`r format(Sys.Date(), '%Y-%m-%d')`
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(comment = "#>", fig.align = "center")
 options(width = 70)
