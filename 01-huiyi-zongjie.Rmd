@@ -16,6 +16,401 @@
 
 由上图可知，温度的中位数整体偏低，湿度的中位数几乎位于中间
 
+数据用的是这段代码：
+```python
+
+import os
+import pandas as pd
+import numpy as np
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+
+# =====================================
+# 1. 文件路径
+# =====================================
+humidity_file = r"D:\桌面\一二三期数据\二三期机舱湿度_mean.csv"
+temperature_file = r"D:\桌面\一二三期数据\二三期外界温度_mean.csv"
+
+output_file = r"D:\桌面\一二三期数据\85台风机温湿度中位数及极差带.html"
+
+# 风机ID：11～95
+fan_ids = [str(i) for i in range(11, 96)]
+
+
+# =====================================
+# 2. 读取CSV
+# =====================================
+def read_data(path):
+    for encoding in ["utf-8-sig", "gbk", "gb18030", "utf-8"]:
+        try:
+            df = pd.read_csv(path, encoding=encoding)
+            print("读取成功：", os.path.basename(path))
+            return df
+        except UnicodeDecodeError:
+            continue
+
+    raise ValueError("无法读取文件，请检查文件编码。")
+
+
+# =====================================
+# 3. 计算每个时刻的统计值
+# =====================================
+def calculate_statistics(path, variable_name):
+
+    df = read_data(path)
+
+    # 第一列为时间
+    time_col = df.columns[0]
+
+    # 统一列名
+    df.columns = df.columns.astype(str).str.strip()
+    time_col = df.columns[0]
+
+    df[time_col] = pd.to_datetime(
+        df[time_col],
+        errors="coerce"
+    )
+
+    df = df.dropna(subset=[time_col])
+
+    # 选择11～95号风机
+    selected_cols = [
+        fan for fan in fan_ids
+        if fan in df.columns
+    ]
+
+    missing_ids = [
+        fan for fan in fan_ids
+        if fan not in selected_cols
+    ]
+
+    print(f"\n{variable_name}实际参与统计的风机数：{len(selected_cols)}")
+    print("未找到的风机ID：", missing_ids)
+
+    if len(selected_cols) == 0:
+        raise ValueError(f"{variable_name}没有找到目标风机数据。")
+
+    # 数值转换
+    data = df[selected_cols].apply(
+        pd.to_numeric,
+        errors="coerce"
+    )
+
+    data.index = df[time_col]
+
+    # 同一时刻有重复记录时，按风机求平均
+    data = data.groupby(level=0).mean().sort_index()
+
+    # 逐时刻统计
+    result = pd.DataFrame(index=data.index)
+
+    result["中位数"] = data.median(axis=1)
+    result["最大值"] = data.max(axis=1)
+    result["最小值"] = data.min(axis=1)
+    result["有效风机数量"] = data.count(axis=1)
+
+    result["极差"] = (
+        result["最大值"] - result["最小值"]
+    )
+
+    result = result.reset_index()
+    result.rename(
+        columns={result.columns[0]: "时间"},
+        inplace=True
+    )
+
+    return result
+
+
+# =====================================
+# 4. 分别计算温度和湿度
+# =====================================
+temperature = calculate_statistics(
+    temperature_file,
+    "外界温度"
+)
+
+humidity = calculate_statistics(
+    humidity_file,
+    "机舱湿度"
+)
+
+
+# =====================================
+# 5. 创建上下排列的图表
+# =====================================
+fig = make_subplots(
+    rows=2,
+    cols=1,
+    shared_xaxes=True,
+    vertical_spacing=0.13,
+    subplot_titles=[
+        "85台风机外界温度中位数及极差带",
+        "85台风机机舱湿度中位数及极差带"
+    ]
+)
+
+
+# =====================================
+# 6. 温度极差带
+# =====================================
+# 只保留最大值、最小值和时间都有效的记录
+temp_valid = temperature.dropna(
+    subset=["时间", "最大值", "最小值"]
+).copy()
+
+# 保证最大值始终不小于最小值
+temp_upper = np.maximum(
+    temp_valid["最大值"].to_numpy(),
+    temp_valid["最小值"].to_numpy()
+)
+
+temp_lower = np.minimum(
+    temp_valid["最大值"].to_numpy(),
+    temp_valid["最小值"].to_numpy()
+)
+
+# 用一个闭合多边形绘制最大值与最小值之间的区域
+fig.add_trace(
+    go.Scatter(
+        x=list(temp_valid["时间"]) + list(temp_valid["时间"][::-1]),
+        y=list(temp_upper) + list(temp_lower[::-1]),
+        fill="toself",
+        fillcolor="rgba(66, 165, 245, 0.25)",
+        mode="lines",
+        line=dict(width=0),
+        name="温度极差带（最大值—最小值）",
+        hoverinfo="skip"
+    ),
+    row=1,
+    col=1
+)
+
+# 温度中位数曲线
+fig.add_trace(
+    go.Scatter(
+        x=temperature["时间"],
+        y=temperature["中位数"],
+        mode="lines",
+        line=dict(
+            color="#D62728",
+            width=1.5
+        ),
+        name="外界温度中位数",
+        customdata=temperature[["有效风机数量"]],
+        hovertemplate=(
+            "时间：%{x|%Y-%m-%d %H:%M}<br>"
+            "温度中位数：%{y:.2f} ℃<br>"
+            "有效风机数量：%{customdata[0]} 台"
+            "<extra></extra>"
+        )
+    ),
+    row=1,
+    col=1
+)
+
+
+# =====================================
+# 7. 湿度极差带
+# =====================================
+humidity_valid = humidity.dropna(
+    subset=["时间", "最大值", "最小值"]
+).copy()
+
+humidity_upper = np.maximum(
+    humidity_valid["最大值"].to_numpy(),
+    humidity_valid["最小值"].to_numpy()
+)
+
+humidity_lower = np.minimum(
+    humidity_valid["最大值"].to_numpy(),
+    humidity_valid["最小值"].to_numpy()
+)
+
+fig.add_trace(
+    go.Scatter(
+        x=list(humidity_valid["时间"]) + list(humidity_valid["时间"][::-1]),
+        y=list(humidity_upper) + list(humidity_lower[::-1]),
+        fill="toself",
+        fillcolor="rgba(46, 204, 113, 0.25)",
+        mode="lines",
+        line=dict(width=0),
+        name="湿度极差带（最大值—最小值）",
+        hoverinfo="skip"
+    ),
+    row=2,
+    col=1
+)
+
+# 湿度中位数曲线
+fig.add_trace(
+    go.Scatter(
+        x=humidity["时间"],
+        y=humidity["中位数"],
+        mode="lines",
+        line=dict(
+            color="#E67E22",
+            width=1.5
+        ),
+        name="机舱湿度中位数",
+        customdata=humidity[["有效风机数量"]],
+        hovertemplate=(
+            "时间：%{x|%Y-%m-%d %H:%M}<br>"
+            "湿度中位数：%{y:.2f}<br>"
+            "有效风机数量：%{customdata[0]} 台"
+            "<extra></extra>"
+        )
+    ),
+    row=2,
+    col=1
+)
+
+
+# =====================================
+# 8. 图表格式
+# =====================================
+fig.update_layout(
+    title=dict(
+        text="二、三期85台风机温湿度中位数及极差带",
+        x=0.5,
+        xanchor="center",
+        font=dict(size=22)
+    ),
+
+    height=1200,
+
+    template="plotly_white",
+
+    hovermode="x",
+
+    dragmode="pan",
+
+    font=dict(
+        family="Microsoft YaHei, SimHei, Arial, sans-serif",
+        size=13
+    ),
+
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.03,
+        xanchor="center",
+        x=0.5
+    ),
+
+    margin=dict(
+        l=80,
+        r=50,
+        t=150,
+        b=110
+    )
+)
+
+
+# =====================================
+# 9. 坐标轴
+# =====================================
+fig.update_yaxes(
+    title_text="外界温度（℃）",
+    row=1,
+    col=1,
+    showgrid=True,
+    zeroline=False
+)
+
+fig.update_yaxes(
+    title_text="机舱湿度",
+    row=2,
+    col=1,
+    showgrid=True,
+    zeroline=False
+)
+
+fig.update_xaxes(
+    title_text="日期",
+    row=2,
+    col=1,
+    rangeslider=dict(
+        visible=True,
+        thickness=0.07
+    ),
+    rangeselector=dict(
+        buttons=[
+            dict(
+                count=1,
+                label="1个月",
+                step="month",
+                stepmode="backward"
+            ),
+            dict(
+                count=3,
+                label="3个月",
+                step="month",
+                stepmode="backward"
+            ),
+            dict(
+                count=6,
+                label="6个月",
+                step="month",
+                stepmode="backward"
+            ),
+            dict(
+                count=1,
+                label="1年",
+                step="year",
+                stepmode="backward"
+            ),
+            dict(
+                step="all",
+                label="全部"
+            )
+        ]
+    )
+)
+
+fig.update_xaxes(
+    showgrid=True,
+    row=1,
+    col=1
+)
+
+
+# =====================================
+# 10. 导出HTML
+# =====================================
+fig.write_html(
+    output_file,
+    include_plotlyjs=True,
+    full_html=True,
+    config={
+        "scrollZoom": True,
+        "displaylogo": False,
+        "responsive": True,
+        "modeBarButtonsToRemove": [
+            "lasso2d",
+            "select2d"
+        ]
+    }
+)
+
+# 同时保存统计数据
+temperature.to_csv(
+    r"D:\桌面\一二三期数据\85台风机逐时刻温度统计.csv",
+    index=False,
+    encoding="utf-8-sig"
+)
+
+humidity.to_csv(
+    r"D:\桌面\一二三期数据\85台风机逐时刻湿度统计.csv",
+    index=False,
+    encoding="utf-8-sig"
+)
+
+print("\n全部处理完成！")
+print("HTML文件：", output_file)
+print("温度和湿度统计CSV也已保存。")
+
+
 ### 内容二：预测温湿度的模型
 
 - **讨论要点**：
