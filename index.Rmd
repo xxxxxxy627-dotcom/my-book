@@ -1,7 +1,6 @@
 ---
 title: "会后总结与任务汇报"
-subtitle: "XXX 课题组"
-author: "你的名字"
+author: "徐欣宜"
 date: "更新于 `r format(Sys.Date(), '%Y-%m-%d')`"
 documentclass: ctexbook
 site: bookdown::bookdown_site
@@ -14,15 +13,3 @@ colorlinks: yes
 knitr::opts_chunk$set(comment = "#>", fig.align = "center")
 options(width = 70)
 ```
-
-# 说明 {-}
-
-这里按时间顺序存放每次的**会后总结**和**任务汇报**。左侧目录点标题即可跳到对应篇目。
-
-写作方式：
-
-- **新建一篇会后总结**：复制 `01-huiyi-zongjie.Rmd`，文件名改成下一个编号（如 `03-huiyi-zongjie.Rmd`），把标题里的日期改掉
-- **新建一篇任务汇报**：复制 `02-renwu-huibao.Rmd`，同样改编号和周次
-- 文件开头的数字决定目录里的顺序，编号不要重复
-
-更新说明：本页最后更新于 `r format(Sys.Date(), '%Y-%m-%d')`。每次提交后，网站会在 1–2 分钟内自动重新编译。
