@@ -11,8 +11,8 @@
 
 ###内容一：温度与湿度中位数在极差带中的位置
 
-- **温度湿度图像**：
-- **湿度图像**：
+- **温度湿度图像**：<iframe src="middle.html" width="100%" height="620" style="border:1px solid #e0e0e0;"></iframe>
+[在新窗口打开交互图](middle.html)
 
 ### 内容二：预测温湿度的模型
 
