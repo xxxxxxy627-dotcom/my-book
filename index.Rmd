@@ -1,0 +1,51 @@
+---
+title: "我的报告"
+subtitle: "副标题（不需要就删掉这一行）"
+author: "你的名字"
+date: "`r Sys.Date()`"
+documentclass: ctexbook
+bibliography: [book.bib, packages.bib]
+biblio-style: apalike
+link-citations: yes
+colorlinks: yes
+lot: yes
+lof: yes
+geometry: [b5paper, tmargin=2.5cm, bmargin=2.5cm, lmargin=3.5cm, rmargin=2.5cm]
+site: bookdown::bookdown_site
+description: "用 bookdown 写的中文报告。"
+github-repo: YOUR_GITHUB_USERNAME/my-book
+---
+
+```{r setup, include=FALSE}
+options(
+  htmltools.dir.version = FALSE, formatR.indent = 2, width = 55, digits = 4
+)
+knitr::opts_chunk$set(
+  comment = "#>",
+  fig.align = "center"
+)
+
+# 需要额外的 R 包就填在这里，例如 c('ggplot2', 'dplyr')
+lapply(c(), function(pkg) {
+  if (system.file(package = pkg) == "") install.packages(pkg)
+})
+```
+
+# 前言 {-}
+
+这里写摘要、写作说明或致谢——`{-}` 表示这一节不编号、不进目录的章节体系。
+
+正文从第 \@ref(intro) 章开始。下面这段是本书的编译环境信息，正式提交前可以删掉：
+
+```{r}
+sessionInfo()
+```
+
+## 致谢 {-}
+
+感谢谁谁和谁谁。
+
+```{block2, type='flushright', html.tag='p'}
+你的名字  
+2026 年
+```
