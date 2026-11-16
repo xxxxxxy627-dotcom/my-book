@@ -17,8 +17,8 @@
 由上图可知，温度的中位数整体偏低，湿度的中位数几乎位于中间
 
 数据用的是这段代码：
-```python
 
+```python
 import os
 import pandas as pd
 import numpy as np
@@ -409,6 +409,7 @@ humidity.to_csv(
 print("\n全部处理完成！")
 print("HTML文件：", output_file)
 print("温度和湿度统计CSV也已保存。")
+```
 
 
 ### 内容二：预测温湿度的模型
