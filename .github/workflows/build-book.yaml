@@ -1,0 +1,54 @@
+name: 编译并发布我的书
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出仓库
+        uses: actions/checkout@v4
+
+      - name: 安装 Pandoc
+        uses: r-lib/actions/setup-pandoc@v2
+
+      - name: 安装 R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - name: 安装 bookdown
+        shell: Rscript {0}
+        run: install.packages(c("bookdown", "rmarkdown", "knitr"))
+
+      - name: 编译 GitBook 网页版
+        shell: Rscript {0}
+        run: bookdown::render_book("index.Rmd", "bookdown::gitbook")
+
+      - name: 打包编译产物
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: 部署到 GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
