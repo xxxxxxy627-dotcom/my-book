@@ -8,9 +8,7 @@
 [在新窗口打开交互图](middle1.html)
 
 - **85台风机均值分布的雨云图**：
-<div style="text-align: center;">
-  <img src="raincloud.png" alt="85台风机云雨图" width="80%">
-</div>
+<img src="raincloud.png" style="width:100%; height:auto;">
 
-### 内容二：本周任务总结
+### 内容二：基础模型总结
 
