@@ -369,21 +369,7 @@ if __name__ == "__main__":
 
 ### 内容二：预测模型
 
-#### 1　VAR（向量自回归）
-
-| 项 | 内容 |
-|---|---|
-| **原始文献** | Sims C A. Macroeconomics and reality. *Econometrica*, 1980, 48(1): 1-48. DOI: [10.2307/1912017](https://doi.org/10.2307/1912017) |
-| **领域应用** | Vector autoregression (VAR) modeling and forecasting of temperature, humidity, and cloud coverage. In: *Computational Intelligence Techniques in Earth and Environmental Sciences*. Springer, 2014: 23-42. DOI: [10.1007/978-94-017-8642-3_2](https://doi.org/10.1007/978-94-017-8642-3_2) |
-| **一句话原理** | 把 T 和 RH 当成一个向量，各自用"自己和对方的过去 p 阶滞后"做线性回归，一次输出两个值 |
-| **输入/输出** | 输入 [T(t-1..t-p), RH(t-1..t-p)] → 输出 [T(t), RH(t)] |
-| **模型形式** | $\begin{bmatrix}T_t\\RH_t\end{bmatrix}=c+\sum_{i=1}^{p}A_i\begin{bmatrix}T_{t-i}\\RH_{t-i}\end{bmatrix}+\varepsilon_t$，其中 $A_i$ 是 2×2 矩阵 |
-| **优点** | ① **零调参**（只选阶数 p，用 AIC/BIC）；② 训练秒级完成；③ **可解释**——$A_i$ 的非对角元素直接量化"RH 的过去对 T 未来的影响"；④ 与 ARIMA 同一方法族，**对比最干净**，不会被质疑"不公平" |
-| **缺点** | ① 只能捕捉**线性**关系；② 假定序列平稳，需差分/去季节；③ 长步长误差累积快；④ 无法利用非线性（如饱和效应） |
-
----
-
-#### 2　多输出回归（Multi-output Regression）
+#### 1　多输出回归（Multi-output Regression）
 
 | 项 | 内容 |
 |---|---|
@@ -395,7 +381,7 @@ if __name__ == "__main__":
 
 ---
 
-#### 3　多任务学习（共享编码器 + 独立双头）
+#### 2　多任务学习（共享编码器 + 独立双头）
 
 | 项 | 内容 |
 |---|---|
@@ -409,7 +395,7 @@ if __name__ == "__main__":
 
 ---
 
-#### 4　单变量 LSTM / GRU 
+#### 3　单变量 LSTM / GRU 
 
 | 项 | 内容 |
 |---|---|
@@ -420,7 +406,7 @@ if __name__ == "__main__":
 
 ---
 
-#### 5　VMD-LSTM / CEEMDAN-LSTM（分解 + 预测）
+#### 4　VMD-LSTM / CEEMDAN-LSTM（分解 + 预测）
 
 | 项 | 内容 |
 |---|---|
@@ -432,3 +418,5 @@ if __name__ == "__main__":
 | **缺点** | ① **未来信息泄漏**：对整段序列分解再切训练/测试，测试集已含未来信息，精度虚高；② **边界效应**：序列两端失真，而预测恰在末端；③ **K 值靠调**，换 K 结果差异大；④ 训练成本随 K 线性增长 |
 
 ---
+
+##会议总结
