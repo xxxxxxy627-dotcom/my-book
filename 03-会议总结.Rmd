@@ -17,4 +17,99 @@
 
 - **导出中位数数据**：代码如下
 
+```python
+import pandas as pd
+from pathlib import Path
 
+# ==============================
+# 1. 文件路径
+# ==============================
+
+folder = Path(r"D:\桌面\一二三期数据")
+
+humidity_file = folder / "二三期机舱湿度_mean.csv"
+temperature_file = folder / "二三期外界温度_mean.csv"
+
+# ==============================
+# 2. 计算每一时刻的中位数
+# ==============================
+
+def calculate_median(input_file, output_file, column_name):
+
+    print(f"\n正在处理：{input_file.name}")
+
+    # 尝试不同编码
+    try:
+        df = pd.read_csv(input_file, encoding="utf-8-sig")
+    except UnicodeDecodeError:
+        df = pd.read_csv(input_file, encoding="gb18030")
+
+    # 第一列为时间，其余列为风机数据
+    time_col = df.columns[0]
+    turbine_cols = df.columns[1:]
+
+    # 转换风机数据为数值类型
+    df[turbine_cols] = df[turbine_cols].apply(
+        pd.to_numeric, errors="coerce"
+    )
+
+    # 计算每一时刻的中位数
+    median_values = df[turbine_cols].median(
+        axis=1, skipna=True
+    )
+
+    # 统计每一时刻有效风机数量
+    valid_counts = df[turbine_cols].count(axis=1)
+
+    # 输出结果
+    result = pd.DataFrame({
+        "时间": df[time_col],
+        column_name: median_values,
+        "有效风机数量": valid_counts
+    })
+
+    # 保存CSV
+    result.to_csv(
+        output_file,
+        index=False,
+        encoding="utf-8-sig"
+    )
+
+    print(f"总时间点数：{len(result)}")
+    print(f"风机数量：{len(turbine_cols)}")
+    print(f"全部缺失的时间点：{(valid_counts == 0).sum()}")
+    print(f"有效风机不足85台的时间点：{(valid_counts < 85).sum()}")
+    print(f"保存成功：{output_file}")
+
+    print("\n前5行数据：")
+    print(result.head())
+
+    return result
+
+
+# ==============================
+# 3. 计算湿度中位数
+# ==============================
+
+humidity_median = calculate_median(
+    input_file=humidity_file,
+    output_file=folder / "二三期机舱湿度_中位数.csv",
+    column_name="机舱湿度中位数"
+)
+
+# ==============================
+# 4. 计算温度中位数
+# ==============================
+
+temperature_median = calculate_median(
+    input_file=temperature_file,
+    output_file=folder / "二三期外界温度_中位数.csv",
+    column_name="外界温度中位数"
+)
+
+print("\n全部处理完成！")
+```
+完整数据见 → [temperature.csv](./data/table.csv) 
+          → [humidity.csv](./data/table.csv) 
+
+- **
