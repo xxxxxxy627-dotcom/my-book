@@ -11,7 +11,7 @@
 <img src="raincloud.png" style="width:100%; height:auto;">
 
 - **将偏高或偏低的风机在图中标注**：
-<img .png" style="width:100%; height:auto;">
+<img src="location1.png" style="width:100%; height:auto;">
 
 ### 内容二：基础模型总结
 
