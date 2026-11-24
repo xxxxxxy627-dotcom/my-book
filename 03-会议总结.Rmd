@@ -184,7 +184,20 @@ print("\n全部处理完成！")
 
 ### 内容四：Prophet滚动拟合与LSTM的对比
 
+- **对比图**：<iframe src="温度_预测曲线.html" width="100%" height="620" style="border:1px solid #e0e0e0;"></iframe>
+[在新窗口打开交互图](温度_预测曲线.html)
 
+<iframe src="湿度_预测曲线.html" width="100%" height="620" style="border:1px solid #e0e0e0;"></iframe>
+[在新窗口打开交互图](湿度_预测曲线.html)
+
+- **数据对比**：
+
+| 预测任务 | MAE | RMSE | R² |
+|---|---:|---:|---:|
+| 温度Prophet | 4.8524| 2.2028| 0.8628 |
+| 温度LSTM | 0.4038 | 0.6599 | 0.9880 |
+| 湿度Prophet | 29.8455|5.4631| 0.4187 |
+| 湿度LSTM | 1.1548 | 1.6764 | 0.9416 |
 
 ### 内容五：后续任务
 
