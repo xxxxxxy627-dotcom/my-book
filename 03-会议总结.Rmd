@@ -10,9 +10,6 @@
 - **85台风机均值分布的雨云图**：
 <img src="raincloud.png" style="width:100%; height:auto;">
 
-- **将偏高或偏低的风机在图中标注**：
-<img src="location1.png" style="width:100%; height:auto;">
-
 ### 内容二：数据预处理
 
 - **导出中位数数据**：代码如下
